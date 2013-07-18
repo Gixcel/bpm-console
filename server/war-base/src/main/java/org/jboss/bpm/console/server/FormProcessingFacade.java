@@ -32,6 +32,7 @@ import org.jboss.bpm.console.server.util.ProjectName;
 import org.jboss.bpm.console.server.util.RsComment;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jbpm.integration.console.StatefulKnowledgeSessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,7 +179,29 @@ public class FormProcessingFacade
 
     return Response.ok(SUCCESSFULLY_PROCESSED_INPUT).build();
   }
+  
+  @POST
+  @Path("work_item/{id}/complete")
+  @Produces("text/html")
+  @Consumes("multipart/form-data")
+  public Response closeWorkItemUI(
+      @Context
+      HttpServletRequest request,
+      @PathParam("id")
+      Long workItemId,
+      MultipartFormDataInput payload
+  )
+  {
+    FieldMapping mapping = createFieldMapping(payload);
 
+	// Should extend ProcessManagement and then the corresponding implementation. Later extend and replace
+	// CommandDelegate, but at the end it comes down to the following code:
+    StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession().getWorkItemManager()
+    	.completeWorkItem(workItemId, mapping.processVars);
+
+    return Response.ok(SUCCESSFULLY_PROCESSED_INPUT).build();
+  }
+  
   @POST
   @Path("process/{id}/complete")
   @Produces("text/html")
