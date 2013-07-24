@@ -1,0 +1,18 @@
+new SessionTemplate().{  
+    businessKey = "jbpm/consolesession",
+    imported = false,
+    persistenceUnit = "org.jbpm.persistence.jpa",
+    
+    properties = ["drools.processInstanceManagerFactory":"org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory",
+                  "drools.processSignalManagerFactory" : "org.jbpm.persistence.processinstance.JPASignalManagerFactory"  
+                    ],
+                    
+    workItemHandlers = ["Human Task" : "new org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler(\"jbpmConsoleHTHandler\", taskClient, ksession, org.jbpm.task.utils.OnErrorAction.LOG)",
+                        "Service Task" : "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"],
+                        
+    eventListeners = ["new org.jbpm.process.audit.JPAWorkingMemoryDbLogger(ksession)",
+                      "new org.jbpm.integration.console.listeners.TriggerRulesEventListener(ksession)"  ],
+                      
+    environmentEntries = ["drools.transaction.TransactionManager":"new javax.naming.InitialContext().lookup('java:comp/env/TransactionManager')",
+                      "drools.transaction.TransactionSynchronizationRegistry":"new javax.naming.InitialContext().lookup('java:comp/env/TransactionSynchronizationRegistry')"  ]      
+};
