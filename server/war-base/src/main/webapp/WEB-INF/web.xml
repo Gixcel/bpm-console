@@ -47,7 +47,7 @@
     <url-pattern>/rs/*</url-pattern>
   </servlet-mapping>
 
-  <security-constraint>
+  <!-- security-constraint>
     <web-resource-collection>
       <web-resource-name>Resteasy</web-resource-name>      
       <url-pattern>/rs/process/*</url-pattern>
@@ -65,10 +65,10 @@
     </auth-constraint>
   </security-constraint>
 
-  <!--login-config>
+  <login-config>
     <auth-method>BASIC</auth-method>
     <realm-name>GWT Console Server</realm-name>
-  </login-config-->
+  </login-config>
 
   <login-config>
     <auth-method>FORM</auth-method>
@@ -86,6 +86,6 @@
   </security-role>
   <security-role>
     <role-name>user</role-name>
-  </security-role>
+  </security-role-->
 
 </web-app>
