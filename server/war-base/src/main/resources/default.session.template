@@ -7,8 +7,8 @@ new SessionTemplate().{
                   "drools.processSignalManagerFactory" : "org.jbpm.persistence.processinstance.JPASignalManagerFactory"  
                     ],
                     
-    workItemHandlers = ["Human Task" : "new org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler(\"jbpmConsoleHTHandler\", taskClient, ksession, org.jbpm.task.utils.OnErrorAction.LOG)",
-                        "Service Task" : "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"],
+    workItemHandlers = ["Human Task" : "new com.artesol.jbpm.HumanTaskWorkItemHandler(taskClient, ksession, 'en_US,es_ES', org.jbpm.task.utils.OnErrorAction.LOG)",
+    					"Service Task" : "new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler(ksession)"],
                         
     eventListeners = ["new org.jbpm.process.audit.JPAWorkingMemoryDbLogger(ksession)",
                       "new org.jbpm.integration.console.listeners.TriggerRulesEventListener(ksession)"  ],

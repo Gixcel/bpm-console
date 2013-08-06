@@ -236,16 +236,20 @@
 				<artifactId>jta</artifactId>
 			</exclusion>
 			<exclusion>
-				<groupId>org.jbpm</groupId>
-				<artifactId>jbpm-human-task-mina</artifactId>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
 			</exclusion>
 			<exclusion>
-				<groupId>org.jbpm</groupId>
-				<artifactId>jbpm-human-task-jms</artifactId>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-databinding-jaxb</artifactId>
 			</exclusion>
 			<exclusion>
-				<groupId>org.jbpm</groupId>
-				<artifactId>jbpm-workitems</artifactId>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>javax.transaction</groupId>
+				<artifactId>jta</artifactId>
 			</exclusion>
 		</exclusions>
 	</dependency>
@@ -294,6 +298,11 @@
 		<groupId>org.mvel</groupId>
 		<artifactId>mvel2</artifactId>
 		<version>2.1.3.Final</version>
+	</dependency>
+	<dependency>
+		<groupId>com.artesol</groupId>
+		<artifactId>artesol-jbpm</artifactId>
+		<version>1.0</version>
 	</dependency>
 
   </dependencies>
