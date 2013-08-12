@@ -26,7 +26,6 @@ import org.jboss.bpm.console.client.model.TaskRef;
 import org.jboss.bpm.console.client.model.TaskRefWrapper;
 import org.jboss.bpm.console.server.gson.GsonFactory;
 import org.jboss.bpm.console.server.integration.ManagementFactory;
-import org.jboss.bpm.console.server.integration.TaskManagement;
 import org.jboss.bpm.console.server.plugin.PluginMgr;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
@@ -39,6 +38,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.net.URL;
 import java.util.List;
@@ -58,18 +58,18 @@ public class TaskListFacade
 {
   private static final Logger log = LoggerFactory.getLogger(TaskMgmtFacade.class);
 
-  private TaskManagement taskManagement;
+  private TaskManagementExt taskManagement;
   private FormDispatcherPlugin formPlugin;
 
   /**
    * Lazy load the {@link org.jboss.bpm.console.server.integration.TaskManagement}
    */
-  private TaskManagement getTaskManagement()
+  private TaskManagementExt getTaskManagement()
   {
     if(null==this.taskManagement)
     {
       ManagementFactory factory = ManagementFactory.newInstance();
-      this.taskManagement = factory.createTaskManagement();
+      this.taskManagement = (TaskManagementExt) factory.createTaskManagement();
       log.debug("Using ManagementFactory impl:" + factory.getClass().getName());
     }
 
@@ -95,10 +95,12 @@ public class TaskListFacade
   @Produces("application/json")
   public Response getTasksForIdRef(
       @PathParam("idRef")
-      String idRef
+      String idRef,
+      @QueryParam("locale")
+      String locale
   )
   {
-    List<TaskRef> assignedTasks = getTaskManagement().getAssignedTasks(idRef);
+    List<TaskRef> assignedTasks = getTaskManagement().getAssignedTasks(idRef, locale);
     return processTaskListResponse(assignedTasks);
   }
 
@@ -107,10 +109,12 @@ public class TaskListFacade
   @Produces("application/json")
   public Response getTasksForIdRefParticipation(
       @PathParam("idRef")
-      String idRef
+      String idRef,
+      @QueryParam("locale")
+      String locale
   )
   {
-    List<TaskRef> taskParticipation = getTaskManagement().getUnassignedTasks(idRef, null);
+    List<TaskRef> taskParticipation = getTaskManagement().getUnassignedTasks(idRef, null, locale);
     return processTaskListResponse(taskParticipation);
   }
 

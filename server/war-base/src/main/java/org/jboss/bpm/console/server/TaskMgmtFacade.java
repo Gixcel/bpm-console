@@ -21,14 +21,17 @@
  */
 package org.jboss.bpm.console.server;
 
+import org.jboss.bpm.console.client.model.TaskRef;
+import org.jboss.bpm.console.server.gson.GsonFactory;
 import org.jboss.bpm.console.server.integration.ManagementFactory;
-import org.jboss.bpm.console.server.integration.TaskManagement;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.jboss.bpm.console.server.plugin.PluginMgr;
 import org.jboss.bpm.console.server.util.ProjectName;
 import org.jboss.bpm.console.server.util.RsComment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -50,19 +53,19 @@ public class TaskMgmtFacade
 {
   private static final Logger log = LoggerFactory.getLogger(TaskMgmtFacade.class);
 
-  private TaskManagement taskManagement;
+  private TaskManagementExt taskManagement;
 
   private FormDispatcherPlugin formPlugin;
 
   /**
    * Lazy load the {@link org.jboss.bpm.console.server.integration.TaskManagement}
    */
-  private TaskManagement getTaskManagement()
+  private TaskManagementExt getTaskManagement()
   {
     if(null==this.taskManagement)
     {
       ManagementFactory factory = ManagementFactory.newInstance();
-      this.taskManagement = factory.createTaskManagement();
+      this.taskManagement = (TaskManagementExt)factory.createTaskManagement();
       log.debug("Using ManagementFactory impl:" + factory.getClass().getName());
     }
 
@@ -83,6 +86,20 @@ public class TaskMgmtFacade
     return this.formPlugin;
   }
 
+  @GET
+  @Path("{taskId}")
+  @Produces("application/json")
+  public Response getTask(
+      @PathParam("taskId")
+      Long taskId,
+      @QueryParam("locale")
+      String locale
+  )
+  {
+    TaskRef task = getTaskManagement().getTaskById(taskId, locale);
+    return createJsonResponse(task);
+  }
+  
   @POST
   @Path("{taskId}/assign/{ifRef}")
   @Produces("application/json")
@@ -145,6 +162,13 @@ public class TaskMgmtFacade
     log.debug("Close task " + taskId + " outcome " + outcome);
     getTaskManagement().completeTask(taskId, outcome, null, request.getUserPrincipal().getName());
     return Response.ok().build();
+  }
+  
+  private Response createJsonResponse(Object wrapper)
+  {
+    Gson gson = GsonFactory.createInstance();
+    String json = gson.toJson(wrapper);
+    return Response.ok(json).type("application/json").build();
   }
 
 }
