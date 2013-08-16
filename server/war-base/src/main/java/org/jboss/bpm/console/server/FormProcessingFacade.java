@@ -22,6 +22,7 @@
 package org.jboss.bpm.console.server;
 
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
+import org.jboss.bpm.console.server.gson.GsonFactory;
 import org.jboss.bpm.console.server.integration.ManagementFactory;
 import org.jboss.bpm.console.server.integration.ProcessManagement;
 import org.jboss.bpm.console.server.integration.TaskManagement;
@@ -35,6 +36,8 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jbpm.integration.console.StatefulKnowledgeSessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -220,7 +223,7 @@ public class FormProcessingFacade
     ProcessInstanceRef instance =
         getProcessManagement().newInstance(definitionId, mapping.processVars);
 
-    return Response.ok(SUCCESSFULLY_PROCESSED_INPUT).build();
+    return createJsonResponse(instance);
   }
 
   private Response provideForm(FormAuthorityRef authorityRef)
@@ -322,5 +325,12 @@ public class FormProcessingFacade
       }
       return result;
     }
+  }
+  
+  private Response createJsonResponse(Object wrapper)
+  {
+    Gson gson = GsonFactory.createInstance();
+    String json = gson.toJson(wrapper);
+    return Response.ok(json).type("application/json").build();
   }
 }
