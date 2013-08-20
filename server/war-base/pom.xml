@@ -194,6 +194,12 @@
       <artifactId>json-lib</artifactId>
       <version>${json-lib.version}</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>commons-beanutils</artifactId>
+      		<groupId>commons-beanutils</groupId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
